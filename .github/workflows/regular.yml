@@ -1,0 +1,33 @@
+# Regular builds for pull-requests and development.
+
+name: Regular build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'maven'
+
+
+      - name: Build
+        run: mvn -B -U clean install --file pom.xml
+
+      - name: Run websocket benchmark
+        run: ./websocket.sh
+        
+      - name: Run domain-socket benchmark
+        run: ./domainsocket.sh
+        
+        
